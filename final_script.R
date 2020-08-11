@@ -1,10 +1,8 @@
-num_pages <- 4
-final_id_num <- NULL
-final_pub_text <- NULL
+num_pages <- 159
 
 index_url_orig <- "https://ies.ed.gov/funding/grantsearch/index.asp?mode=1&sort=1&order=1&searchvals=&SearchType=or&checktitle=on&checkaffiliation=on&checkprincipal=on&checkquestion=on&checkprogram=on&checkawardnumber=on&slctAffiliation=0&slctPrincipal=0&slctYear=0&slctProgram=0&slctGoal=0&slctCenter=0&FundType=1&FundType=2"
 
-for(i in 2:num_pages){
+for(i in 1:num_pages){
   
   index_url <- paste(index_url_orig, "&GrantsPageNum=", i, sep = "")
   
@@ -22,7 +20,10 @@ for(i in 2:num_pages){
       html_nodes("td") %>% 
       html_text()
     
-    id_num <- initial_parse[20]
+    id_num <- read_html(grant_url) %>% 
+      html_nodes(xpath = ".//td[contains(., 'Award Number:')]/following-sibling::td") %>% 
+      html_text()
+    if(length(id_num) == 0){id_num <- NA}
 
     detail_text <- initial_parse[[(length(initial_parse) - 1)]]
     
@@ -37,10 +38,8 @@ for(i in 2:num_pages){
     }
     
     grant_output <- tibble(id = id_num, pub_text = pub_text, url = grant_url)
-    write_csv(grant_output, "test.csv", append = TRUE)
+    write_csv(grant_output, "all_ies_grants.csv", append = TRUE)
     
   }
   
 }
-
-# That ^ almost works perfectly, except need a better way of parsing ID number
