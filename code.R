@@ -12,6 +12,11 @@ test <- web_page %>%
   html_nodes("td") %>% 
   html_text()
 test <- test[[(length(test) - 1)]]
+
+test <- web_page %>% 
+  html_nodes("td") %>% 
+  html_text()
+id_num <- test[20]
 # 
 # test <- web_page %>%
 #   html_text()
@@ -24,6 +29,12 @@ str_match(test, pattern = "(?s)Publications.*$")
 
 
 indexurl_page1 <- "https://ies.ed.gov/funding/grantsearch/index.asp?mode=1&sort=1&order=1&searchvals=&SearchType=or&checktitle=on&checkaffiliation=on&checkprincipal=on&checkquestion=on&checkprogram=on&checkawardnumber=on&slctAffiliation=0&slctPrincipal=0&slctYear=0&slctProgram=0&slctGoal=0&slctCenter=0&FundType=1&FundType=2"
+# Each page after 1 adds on: &GrantsPageNum=_
+# 
+# https://ies.ed.gov/funding/grantsearch/index.asp?mode=1&sort=1&order=1&SearchType=or&checktitle=on&checkaffiliation=on&checkprincipal=on&checkquestion=on&checkprogram=on&checkawardnumber=on&slctAffiliation=0&slctPrincipal=0&slctYear=0&slctProgram=0&slctGoal=0&slctCenter=0&FundType=1&FundType=2&GrantsPageNum=2
+# https://ies.ed.gov/funding/grantsearch/index.asp?mode=1&sort=1&order=1&SearchType=or&checktitle=on&checkaffiliation=on&checkprincipal=on&checkquestion=on&checkprogram=on&checkawardnumber=on&slctAffiliation=0&slctPrincipal=0&slctYear=0&slctProgram=0&slctGoal=0&slctCenter=0&FundType=1&FundType=2&GrantsPageNum=150
+
+
 index <- read_html(indexurl_page1)
 # test <- index %>% 
 #   html_nodes("a") %>% 
@@ -35,3 +46,10 @@ progress <- index %>%
   str_match("ID=[\\d]+")
 
 #OH SHIT I FUCKIN WROTE A REGEX MYSELF
+#
+# Okay. So.
+# Loop over the number of pages -- I think it's 1 to 159 or some shit
+# For each page, extract all the ID numbers to the specific grants
+# (code above).
+# Then stick those numbers into the code at the top to parse out
+# any publications for them!
