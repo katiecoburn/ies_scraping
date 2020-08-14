@@ -53,3 +53,31 @@ progress <- index %>%
 # (code above).
 # Then stick those numbers into the code at the top to parse out
 # any publications for them!
+
+
+
+##### Making final sample of efficacy/effectiveness grants
+
+
+
+library(tidyverse)
+all_ies <- read_csv(file = "ies_funded_efficacy_studies_all.csv")
+
+#count if (Status_Now == "Completed" | Status_Now == "Not completed") & GoalText != "Multiple Goals" Chris' Stata code
+
+levels(factor(all_ies$Status_Now))
+
+our_sample <- all_ies %>% 
+  filter(Status_Now != "In field") %>% #there's only 3 possible values for this, more efficient to filter out the remaining one
+  filter(GoalText != "Multiple Goals")
+dim(our_sample) # 337 grants
+
+our_sample$AwardNum
+
+pub_data <- read_csv(file = "all_ies_grants.csv", col_names = FALSE)
+colnames(pub_data) <- c("AwardNum", "publications", "url")
+
+our_sample_ies_grants <- right_join(pub_data, our_sample) %>% 
+  print(n = Inf)
+
+write_csv(our_sample_ies_grants, col_names = TRUE, path = "our_sample.csv")
