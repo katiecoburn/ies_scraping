@@ -8,7 +8,10 @@ our_sample <- read_csv(file = "our_sample.csv", col_names = TRUE) %>%
   clean_names()
 
 test <- our_sample %>% 
-  select(principal_name, principal_affiliation_name)
+  select(principal_name, principal_affiliation_name, publications) %>% 
+  distinct(principal_affiliation_name, principal_name, .keep_all = TRUE) 
+
+write_csv(test, path = "for_collection.csv", col_names = TRUE)
 
 test[1,]
 test[100,]
