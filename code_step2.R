@@ -3,15 +3,27 @@ library(janitor)
 library(rvest)
 library(purrr)
 library(stringr)
+our_sample_final <- full_join(our_sample, contact_info, by = c("principal_name", "principal_affiliation_name"))
+
+write_csv(our_sample_final, "final_sample.csv", col_names = TRUE)
+
+contact_info <- read_csv(file = "for_collection.csv")
 
 our_sample <- read_csv(file = "our_sample.csv", col_names = TRUE) %>% 
   clean_names()
+
+for_collection_pubs <- our_sample %>% filter(!is.na(publications)) %>% 
+  select(award_num, publications, url)
+write_csv(for_collection_pubs, "for_collection_pubs.csv", col_names = TRUE)
 
 test <- our_sample %>% 
   select(principal_name, principal_affiliation_name, publications) %>% 
   distinct(principal_affiliation_name, principal_name, .keep_all = TRUE) 
 
 write_csv(test, path = "for_collection.csv", col_names = TRUE)
+
+read_csv("for_collection.csv") -> test
+
 
 test[1,]
 test[100,]
